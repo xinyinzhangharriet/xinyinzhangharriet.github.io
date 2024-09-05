@@ -11,7 +11,7 @@ redirect_from:
 
 Education
 ======
-* B.S. in Finance (minor in data science), Peking University, 2025
+* BEc in Finance (minor in data science), Peking University, 2025
 
 Internship experience
 ======
