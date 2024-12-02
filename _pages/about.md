@@ -17,11 +17,6 @@ I'm a fourth-year undergraduate student from [Guanghua School of Management](htt
 
 ### Blog Introduction
 This is a continuously and irregularly updated project primarily focused on sharing my experiences transitioning to the STEM field (specifically computer science and data science) within a short time.
-Four parts will be included:
-* Basic skills that college won't teach you.
-* Courses that are necessary and why.
-* Study materials and experiences for these courses.
-* Personal experiences.
 
 ### Other fun facts
 * Five years of training in table tennis
