@@ -1,0 +1,41 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { t, formatDate, readingTime, localePath } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang: Lang; post: CollectionEntry<'blog'> }
+const { lang, post } = Astro.props;
+const tr = t(lang);
+const { Content } = await render(post);
+const slugOf = (id: string) => id.split('/').slice(1).join('/');
+const slug = slugOf(post.id);
+
+const all = (await getCollection('blog', (p) => p.id.startsWith(`${lang}/`) && !p.data.draft))
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+const idx = all.findIndex((p) => p.id === post.id);
+const prev = idx > 0 ? all[idx - 1] : undefined;
+const next = idx < all.length - 1 ? all[idx + 1] : undefined;
+
+// Link to the same post in the other language only if it exists.
+const otherId = `${lang === 'en' ? 'zh' : 'en'}/${slug}`;
+const hasTwin = (await getCollection('blog')).some((p) => p.id === otherId);
+const altPath = hasTwin ? `/blog/${slug}` : '/blog';
+const minutes = readingTime(post.body ?? '', lang);
+---
+<Base lang={lang} title={post.data.title} description={post.data.description} altPath={altPath} current="/blog">
+  <article>
+    <header class="post-header">
+      <h1>{post.data.title}</h1>
+      <div class="post-meta">
+        <span><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time></span>
+        <span>{minutes} {tr('post.minutes')}</span>
+      </div>
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+  <nav class="post-nav">
+    {prev && <a href={localePath(lang, `/blog/${slugOf(prev.id)}`)}><small>{tr('post.prev')}</small>{prev.data.title}</a>}
+    {next && <a class="next" href={localePath(lang, `/blog/${slugOf(next.id)}`)}><small>{tr('post.next')}</small>{next.data.title}</a>}
+  </nav>
+</Base>

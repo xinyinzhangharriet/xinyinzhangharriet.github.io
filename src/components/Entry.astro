@@ -1,0 +1,20 @@
+---
+import type { Entry } from '../data/resume';
+
+interface Props { entry: Entry; heading: 'org' | 'role' }
+const { entry: e, heading } = Astro.props;
+const title = heading === 'org' ? e.org : e.role;
+const sub = heading === 'org' ? e.role : e.org;
+---
+<div class="entry">
+  <div class="entry-side">
+    <span class="logo"><img src={e.logo} alt="" loading="lazy" /></span>
+    <div class="entry-when"><span>{e.period}</span><span>{e.location}</span></div>
+  </div>
+  <div class="entry-body">
+    <h3>{title}</h3>
+    <div class="role">{sub}</div>
+    {e.notes && <ul>{e.notes.map((n) => <li>{n}</li>)}</ul>}
+    {e.keywords && <div class="keywords">{e.keywords.map((k) => <span>{k}</span>)}</div>}
+  </div>
+</div>

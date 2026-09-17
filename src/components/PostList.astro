@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+import { formatDate, localePath } from '../i18n/utils';
+
+interface Props { posts: CollectionEntry<'blog'>[]; lang: Lang }
+const { posts, lang } = Astro.props;
+const slugOf = (id: string) => id.split('/').slice(1).join('/');
+---
+<ul class="post-list">
+  {posts.map((p) => (
+    <li>
+      <a href={localePath(lang, `/blog/${slugOf(p.id)}`)}>{p.data.title}</a>
+      <time datetime={p.data.date.toISOString()}>{formatDate(p.data.date, lang)}</time>
+    </li>
+  ))}
+</ul>

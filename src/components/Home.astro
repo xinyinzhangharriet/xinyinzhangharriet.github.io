@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import Social from './Social.astro';
+import { t, localePath } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const tr = t(lang);
+
+const posts = (await getCollection('blog', (p) => p.id.startsWith(`${lang}/`) && !p.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+<Base lang={lang} altPath="/" current="/">
+  <section class="hero">
+    <h1>{tr('site.title')}</h1>
+    <p class="tagline">{tr('home.tagline')}</p>
+    <p class="intro">{tr('home.intro')}</p>
+    <Social />
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">{tr('home.recent')}</h2>
+    {posts.length ? <PostList posts={posts} lang={lang} /> : <p class="page-desc">{tr('blog.empty')}</p>}
+    <a class="more" href={localePath(lang, '/blog')}>{tr('home.all')} →</a>
+  </section>
+
+  {lang === 'en' && (
+    <script is:inline>
+      // Honor a previously chosen language on the root URL only.
+      try {
+        if (location.pathname === '/' && localStorage.getItem('lang') === 'zh' && !sessionStorage.getItem('lang-redirected')) {
+          sessionStorage.setItem('lang-redirected', '1');
+          location.replace('/zh/');
+        }
+      } catch {}
+    </script>
+  )}
+</Base>

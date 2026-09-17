@@ -1,0 +1,58 @@
+export const languages = { en: 'English', zh: '中文' } as const;
+export type Lang = keyof typeof languages;
+export const defaultLang: Lang = 'en';
+
+export const ui = {
+  en: {
+    'site.title': 'Xinyin Zhang',
+    'site.description': 'Personal site of Xinyin Zhang: resume and writing on machine learning, LLMs, and agents.',
+    'nav.home': 'Home',
+    'nav.resume': 'Resume',
+    'nav.blog': 'Blog',
+    'nav.switch': '中文',
+    'home.tagline': 'Master’s student at Carnegie Mellon University, B.S. graduate of Peking University.',
+    'home.intro':
+      'I study Business Intelligence and Data Analytics at Heinz College, Carnegie Mellon University, with a background in finance from Peking University, Guanghua School of Management. I write here about machine learning, LLMs, agents, and things I learn along the way.',
+    'home.recent': 'Recent writing',
+    'home.all': 'All posts',
+    'resume.title': 'Resume',
+    'resume.education': 'Education',
+    'resume.papers': 'Papers',
+    'resume.experience': 'Experience',
+    'blog.title': 'Blog',
+    'blog.description': 'Writing on machine learning, LLMs, agents, and things I learn.',
+    'blog.empty': 'Nothing here yet.',
+    'post.prev': 'Previous',
+    'post.next': 'Next',
+    'post.back': 'Back to blog',
+    'post.minutes': 'min read',
+    'footer.rss': 'RSS',
+    'theme.toggle': 'Toggle dark mode',
+  },
+  zh: {
+    'site.title': 'Xinyin Zhang',
+    'site.description': 'Xinyin Zhang 的个人网站：简历与关于机器学习、大模型、智能体的写作。',
+    'nav.home': '首页',
+    'nav.resume': '简历',
+    'nav.blog': '博客',
+    'nav.switch': 'English',
+    'home.tagline': '卡内基梅隆大学硕士研究生，北京大学学士。',
+    'home.intro':
+      '我目前在卡内基梅隆大学攻读信息系统管理硕士（商业智能与数据分析方向），本科毕业于北京大学光华管理学院金融系。这里记录我在机器学习、大模型、智能体方面的学习和思考。',
+    'home.recent': '最近的文章',
+    'home.all': '全部文章',
+    'resume.title': '简历',
+    'resume.education': '教育经历',
+    'resume.papers': '论文',
+    'resume.experience': '工作经历',
+    'blog.title': '博客',
+    'blog.description': '关于机器学习、大模型、智能体和日常所学的写作。',
+    'blog.empty': '暂时还没有文章。',
+    'post.prev': '上一篇',
+    'post.next': '下一篇',
+    'post.back': '返回博客',
+    'post.minutes': '分钟阅读',
+    'footer.rss': 'RSS',
+    'theme.toggle': '切换深色模式',
+  },
+} as const;

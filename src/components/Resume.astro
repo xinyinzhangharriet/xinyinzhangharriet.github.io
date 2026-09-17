@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Entry from './Entry.astro';
+import Social from './Social.astro';
+import { t } from '../i18n/utils';
+import { resume } from '../data/resume';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const tr = t(lang);
+const r = resume[lang];
+---
+<Base lang={lang} title={tr('resume.title')} altPath="/resume" current="/resume">
+  <h1 class="page-title">{r.name}</h1>
+  <p class="page-desc">{tr('home.tagline')}</p>
+  <Social />
+
+  <section class="resume-section">
+    <h2 class="section-title">{tr('resume.education')}</h2>
+    {r.education.map((e) => <Entry entry={e} heading="org" />)}
+  </section>
+
+  <section class="resume-section">
+    <h2 class="section-title">{tr('resume.papers')}</h2>
+    {r.papers.map((p) => (
+      <div class="paper">
+        <div class="title">{p.url ? <a href={p.url}>{p.title}</a> : p.title}</div>
+        <div class="authors">{p.authors}</div>
+        <div class="venue">{p.venue}</div>
+      </div>
+    ))}
+  </section>
+
+  <section class="resume-section">
+    <h2 class="section-title">{tr('resume.experience')}</h2>
+    {r.experience.map((e) => <Entry entry={e} heading="role" />)}
+  </section>
+</Base>

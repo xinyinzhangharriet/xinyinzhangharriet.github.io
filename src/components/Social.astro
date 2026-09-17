@@ -1,0 +1,16 @@
+---
+import { social } from '../data/resume';
+import envelope from '../icons/envelope.svg?raw';
+import linkedin from '../icons/linkedin-in.svg?raw';
+import github from '../icons/github.svg?raw';
+import scholar from '../icons/google-scholar.svg?raw';
+
+const icons: Record<string, string> = { envelope, 'linkedin-in': linkedin, github, 'google-scholar': scholar };
+---
+<ul class="social">
+  {social.map((s) => (
+    <li>
+      <a href={s.href} aria-label={s.label} title={s.label} target={s.href.startsWith('http') ? '_blank' : undefined} rel={s.href.startsWith('http') ? 'noopener' : undefined} set:html={icons[s.icon]} />
+    </li>
+  ))}
+</ul>

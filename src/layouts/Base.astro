@@ -1,0 +1,106 @@
+---
+import '../styles/global.css';
+import { t, localePath, otherLang } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+import sun from '../icons/sun.svg?raw';
+import moon from '../icons/moon.svg?raw';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** Path (without language prefix) of the equivalent page in the other language. */
+  altPath?: string;
+  /** Current page path without language prefix, used to mark the active nav item. */
+  current?: string;
+}
+
+const { lang, title, description, altPath = '/', current = '/' } = Astro.props;
+const tr = t(lang);
+const siteTitle = tr('site.title');
+const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
+const desc = description ?? tr('site.description');
+const other = otherLang(lang);
+const switchHref = localePath(other, altPath);
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const nav = [
+  { href: localePath(lang, '/'), label: tr('nav.home'), key: '/' },
+  { href: localePath(lang, '/resume'), label: tr('nav.resume'), key: '/resume' },
+  { href: localePath(lang, '/blog'), label: tr('nav.blog'), key: '/blog' },
+];
+const fontHref =
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Serif+SC:wght@400;500&display=swap';
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={other} href={new URL(switchHref, Astro.site)} />
+    <link rel="alternate" type="application/rss+xml" title={siteTitle} href={localePath(lang, '/rss.xml')} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fontHref} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    <script is:inline>
+      // Apply a saved theme before first paint to avoid a flash.
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href={localePath(lang, '/')}>{siteTitle}</a>
+        <nav class="nav" aria-label="Main">
+          {nav.map((item) => (
+            <a href={item.href} aria-current={item.key === current ? 'page' : undefined}>{item.label}</a>
+          ))}
+          <a class="lang-switch" href={switchHref} hreflang={other} data-lang-switch={other}>{tr('nav.switch')}</a>
+          <button class="theme-toggle" type="button" aria-label={tr('theme.toggle')} title={tr('theme.toggle')}>
+            <span class="icon-moon" set:html={moon} />
+            <span class="icon-sun" set:html={sun} />
+          </button>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        <slot />
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© {new Date().getFullYear()} Xinyin Zhang</span>
+        <a href={localePath(lang, '/rss.xml')}>{tr('footer.rss')}</a>
+      </div>
+    </footer>
+    <script>
+      // Remember the visitor's language choice so the root URL can honor it next time.
+      document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((a) => {
+        a.addEventListener('click', () => {
+          try { localStorage.setItem('lang', a.dataset.langSwitch!); } catch {}
+        });
+      });
+
+      // Light / dark toggle. Without a saved choice the site follows the system setting.
+      const root = document.documentElement;
+      const systemDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.querySelector('.theme-toggle')?.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') ?? (systemDark() ? 'dark' : 'light');
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch {}
+      });
+    </script>
+  </body>
+</html>
